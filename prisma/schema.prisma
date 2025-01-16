@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  binaryTargets   = ["native", "linux-musl"]
+  previewFeatures = ["mongodb"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model PlaneTrip {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  origin        String
+  destination   String
+  departureTime DateTime  @map("departure_time")
+  flightTime    Int       @map("arrival_time")
+  createdAt     DateTime  @map("created_at")
+  deletedAt     DateTime? @map("deleted_at")
+  planeId       String
+
+  // Relations
+  GroundTime GroundTime?
+
+  @@index([planeId])
+  @@map("planeTrip")
+}
+
+model GroundTime {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  planeId     String
+  destination String
+  groundTime  DateTime
+  duration    Int
+  createdAt   DateTime  @map("created_at")
+  deletedAt   DateTime? @map("deleted_at")
+  planeTripId String    @unique @map("plane_trip_id") @db.ObjectId
+  PlaneTrip   PlaneTrip @relation(fields: [planeTripId], references: [id])
+
+  @@index([planeId])
+  @@map("groundTime")
+}

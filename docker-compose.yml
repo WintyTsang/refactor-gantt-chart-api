@@ -1,0 +1,22 @@
+services:
+  mongodb:
+    image: dockerpull.org/prismagraphql/mongo-single-replica:4.4.3-bionic
+    platform: linux/amd64
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - 27017:27017
+  redis:
+    image: dockerpull.org/redis:latest
+    platform: linux/amd64
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - /dаta:/root/redis
+      - /opt/homebrew/etc/redis/redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_PASSWORD=my-password
+      - REDIS_PORT=6379
+      - REDIS_DATABASES=16
